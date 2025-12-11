@@ -52,8 +52,8 @@ public partial class Radar : BaseSettingsPlugin<RadarSettings>
         GameController.PluginBridge.SaveMethod("Radar.LookForRoute",
             (Vector2 target, Action<List<Vector2i>> callback, CancellationToken cancellationToken) =>
                 AddRoute(target, null, callback, cancellationToken));
-        GameController.PluginBridge.SaveMethod("Radar.ClusterTarget",
-            (string targetName, int expectedCount) => ClusterTarget(targetName, expectedCount));
+		GameController.PluginBridge.SaveMethod("Radar.ClusterTarget",
+			(string targetName, int expectedCount) => ClusterTarget(targetName, expectedCount, 1));
 
         Input.RegisterKey(Settings.ManuallyDumpInstance.Value);
         Settings.ManuallyDumpInstance.OnValueChanged += () => { Input.RegisterKey(Settings.ManuallyDumpInstance.Value); };
@@ -67,7 +67,7 @@ public partial class Radar : BaseSettingsPlugin<RadarSettings>
         {
             _targetDescriptionsInArea = GetTargetDescriptionsInArea().DistinctBy(x => x.Name).ToDictionary(x => x.Name);
             _currentZoneTargetEntityPaths = _targetDescriptionsInArea.Values.Where(x => x.TargetType == TargetType.Entity).DistinctBy(x => x.Name).Select(x=>(x.Name.ToLikeRegex(), x)).ToList();
-            _terrainMetadata = GameController.IngameState.Data.Terrain;
+            _terrainMetadata = GameController.IngameState.Data.DataStruct.Terrain;
             _heightData = GameController.IngameState.Data.RawTerrainHeightData;
             _allTargetLocations = GetTargets();
             _locationsByPosition = new ConcurrentDictionary<Vector2i, List<string>>(_allTargetLocations
@@ -157,6 +157,13 @@ public partial class Radar : BaseSettingsPlugin<RadarSettings>
                 _allTargetLocations.AddOrUpdate(targetDescription.Name, _ => [truncatedPos],
                     // ReSharper disable once AssignmentInConditionalExpression
                     (_, l) => (alreadyContains = l.Contains(truncatedPos)) ? l : [..l, truncatedPos]);
+				 if (targetDescription.ClusterSize > 1)
+				{
+					var currentLocations = _allTargetLocations[targetDescription.Name];
+					var filteredLocations = FilterByClusterSize(currentLocations, targetDescription.ClusterSize);
+					_allTargetLocations[targetDescription.Name] = filteredLocations;
+					alreadyContains = !filteredLocations.Contains(truncatedPos);
+				}
                 _locationsByPosition.AddOrUpdate(truncatedPos, _ => [targetDescription.Name],
                     (_, l) => l.Contains(targetDescription.Name) ? l : [..l, targetDescription.Name]);
                 if (!alreadyContains)
@@ -173,7 +180,8 @@ public partial class Radar : BaseSettingsPlugin<RadarSettings>
             }
         }
     }
-
+	
+	
     private Vector2 GetPlayerPosition()
     {
         var player = GameController.Game.IngameState.Data.LocalPlayer;

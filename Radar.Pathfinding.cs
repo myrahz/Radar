@@ -182,6 +182,56 @@ public partial class Radar
             callback(path);
         }
     }
+	private List<Vector2i> FilterByClusterSize(IReadOnlyCollection<Vector2i> positions, int clusterSize)
+	{
+		if (clusterSize <= 1) return positions.ToList();
+		
+		var validClusters = new HashSet<Vector2i>();
+		var positionSet = new HashSet<Vector2i>(positions);
+		
+		foreach (var pos in positions)
+		{
+			if (validClusters.Contains(pos)) continue;
+			
+			// Flood fill to find connected component
+			var cluster = new HashSet<Vector2i>();
+			var queue = new Queue<Vector2i>();
+			queue.Enqueue(pos);
+			cluster.Add(pos);
+			
+			while (queue.Count > 0)
+			{
+				var current = queue.Dequeue();
+				
+				// Check neighbors at TILE distance (23 grid units)
+				var neighbors = new[]
+				{
+					new Vector2i(current.X + TileToGridConversion, current.Y),
+					new Vector2i(current.X - TileToGridConversion, current.Y),
+					new Vector2i(current.X, current.Y + TileToGridConversion),
+					new Vector2i(current.X, current.Y - TileToGridConversion),
+				};
+				
+				foreach (var neighbor in neighbors)
+				{
+					if (positionSet.Contains(neighbor) && !cluster.Contains(neighbor))
+					{
+						cluster.Add(neighbor);
+						queue.Enqueue(neighbor);
+					}
+				}
+			}
+			
+			// If cluster is large enough, add all positions in it
+			if (cluster.Count >= clusterSize)
+			{
+				foreach (var p in cluster)
+					validClusters.Add(p);
+			}
+		}
+		
+		return validClusters.ToList();
+	}
 
     private ConcurrentDictionary<string, List<Vector2i>> GetTargets()
     {
@@ -257,29 +307,40 @@ public partial class Radar
         return _allTargetLocations.Where(x => regex.IsMatch(x.Key)).SelectMany(x => x.Value).ToList();
     }
 
-    private TargetLocations ClusterTarget(TargetDescription target)
-    {
-        var expectedCount = target.ExpectedCount;
-        var targetName = target.Name;
-        var locations = ClusterTarget(targetName, expectedCount);
-        if (locations == null) return null;
-        return new TargetLocations
-        {
-            Locations = locations,
-            Target = target,
-        };
-    }
+	private TargetLocations ClusterTarget(TargetDescription target)
+	{
+		var expectedCount = target.ExpectedCount;
+		var targetName = target.Name;
+		var clusterSize = target.ClusterSize; 
+		var locations = ClusterTarget(targetName, expectedCount, clusterSize);
+		if (locations == null) return null;
+		return new TargetLocations
+		{
+			Locations = locations,
+			Target = target,
+		};
+	}
 
-    private Vector2[] ClusterTarget(string targetName, int expectedCount)
-    {
-        var tileList = GetLocationsFromTilePattern(targetName);
-        if (tileList is not { Count: > 0 })
-        {
-            return null;
-        }
+   private Vector2[] ClusterTarget(string targetName, int expectedCount, int clusterSize = 1) // ADD clusterSize parameter
+	{
+		var tileList = GetLocationsFromTilePattern(targetName);
+		if (tileList is not { Count: > 0 })
+		{
+			return null;
+		}
 
-        var clusterIndexes = KMeans.Cluster(tileList.Select(x => new Vector2d(x.X, x.Y)).ToArray(), expectedCount);
-        var resultList = new List<Vector2>();
+		// ADD THIS: Filter by cluster size before KMeans clustering
+		if (clusterSize > 1)
+		{
+			tileList = FilterByClusterSize(tileList, clusterSize);
+			if (tileList.Count == 0)
+			{
+				return null;
+			}
+		}
+
+		var clusterIndexes = KMeans.Cluster(tileList.Select(x => new Vector2d(x.X, x.Y)).ToArray(), expectedCount);
+		var resultList = new List<Vector2>();
         foreach (var tileGroup in tileList.Zip(clusterIndexes).GroupBy(x => x.Second))
         {
             var v = new Vector2();
