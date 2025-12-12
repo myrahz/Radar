@@ -67,7 +67,7 @@ public partial class Radar : BaseSettingsPlugin<RadarSettings>
         {
             _targetDescriptionsInArea = GetTargetDescriptionsInArea().DistinctBy(x => x.Name).ToDictionary(x => x.Name);
             _currentZoneTargetEntityPaths = _targetDescriptionsInArea.Values.Where(x => x.TargetType == TargetType.Entity).DistinctBy(x => x.Name).Select(x=>(x.Name.ToLikeRegex(), x)).ToList();
-            _terrainMetadata = GameController.IngameState.Data.DataStruct.Terrain;
+            _terrainMetadata = GameController.IngameState.Data.DataStruct.Terrain;            
             _heightData = GameController.IngameState.Data.RawTerrainHeightData;
             _allTargetLocations = GetTargets();
             _locationsByPosition = new ConcurrentDictionary<Vector2i, List<string>>(_allTargetLocations

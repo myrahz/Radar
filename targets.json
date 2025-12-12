@@ -170,7 +170,7 @@
     {
       "Name": "BuriedDoor",
       "ExpectedCount": 1,
-      "DisplayName": "GOOD VAULT"
+      "DisplayName": "Vault (Rare chest + magic amulet)"
     },
     {
       "Name": "Metadata/Terrain/Desert/BuriedCity/Features/Keth_SinkholeTransition_01.tdt",
@@ -205,15 +205,15 @@
     {
       "Name": "Metadata/Terrain/Desert/BuriedCity/Citywall_0/StMM_Door_01.tdt",
       "ExpectedCount": 1,
-      "DisplayName": "GOOD VAULT"
+      "DisplayName": "Vault (Rare chest + magic amulet)"
     },
     {
       "Name": "BuriedDoor",
-      "DisplayName": "GOOD VAULT"
+      "DisplayName": "Vault (Rare chest + magic amulet)"
     },
     {
       "Name": "Metadata/Terrain/Desert/BuriedCity/Citywall_0/StMM_Door_01.tdt",
-      "DisplayName": "GOOD VAULT"
+      "DisplayName": "Vault (Rare chest + magic amulet)"
     }
   ],
   "G3_17": [
@@ -246,6 +246,12 @@
       "ExpectedCount": 1,
       "DisplayName": "Ignagduk, The Bog Witch (+30 Spirit)"
     },
+	 {
+      "Name": "Metadata/Terrain/Jungle/JungleExterior/Bog/bogforcedblank_upper_01.tdt",
+      "ClusterSize": 36,
+      "DisplayName": "Fire Resist Buff"
+    },
+
     {
       "Name": "Metadata/Terrain/Jungle/JungleExterior/Bog/AreaTransition/EntranceBog_01.tdt",
       "ExpectedCount": 1,
@@ -311,6 +317,88 @@
       "ExpectedCount": 2,
       "DisplayName": "Quest close - passive effects"
     },
+	
+	
+	{
+		  "Name": "Rare Sarcophagus 1",
+		  "DisplayName": "Rare Sarcophagus	",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_Cc_01.tdt",
+			"B": "Metadata/Terrain/Jungle/SnakePit/BlackInsideWall_01_roofshadow.tdt",
+			"C": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_01.tdt",
+			"D": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cv_01.tdt",
+			"E": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_St_01.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["*","*", "*", "*", "B"],			
+			["*","A", "A", "A", "*"],			
+			["*","A", "A", "A", "*"],
+			["*","A", "A", "A", "E"],
+			["B","*", "*", "C", "D"]
+		  ]
+	},{
+		  "Name": "Rare Sarcophagus 2",
+		  "DisplayName": "Rare Sarcophagus",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_Cc_01.tdt",
+			"B": "Metadata/Terrain/Jungle/SnakePit/BlackInsideWall_01_roofshadow.tdt",
+			"C": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_01.tdt",
+			"D": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cv_01.tdt",
+			"E": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_St_01.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["*","*", "*", "*", "B"],			
+			["*","A", "A", "A", "*"],			
+			["*","A", "A", "A", "*"],
+			["*","A", "A", "A", "C"],
+			["B","*", "*", "E", "D"]
+		  ]
+	},
+	{
+		  "Name": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_01.tdt",
+		  "DisplayName": "Venom Quest",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_Cc_01.tdt",
+			"B": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_01.tdt",
+			"C": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_St_01.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["B", "C"],			
+			["C", "A"]
+		  ]
+	},
+	
+	{
+		  "Name": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_02.tdt",
+		  "DisplayName": "Venom Quest",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_Cc_01.tdt",
+			"B": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_02.tdt",
+			"C": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_St_01.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["B", "C"],			
+			["C", "A"]
+		  ]
+	},
+    {
+		  "Name": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_03.tdt",
+		  "DisplayName": "Venom Quest",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_Cc_Cc_01.tdt",
+			"B": "Metadata/Terrain/Jungle/SnakePit/ForcedBlank_03.tdt",
+			"C": "Metadata/Terrain/Jungle/SnakePit/CombinationTiles/Vaal_to_Roots_St_01.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["B", "C"],			
+			["C", "A"]
+		  ]
+	},
     {
       "Name": "Metadata/Chests/QuestChests/SnakePit/SnakeLadyPotionChest",
       "ExpectedCount": 1,
@@ -376,6 +464,37 @@
       "ExpectedCount": 1,
       "DisplayName": "Keth"
     },
+	{
+		  "Name": "Metadata/Terrain/Desert/Maraketh/Floor/Blank_Fill_01.tdt",
+		  "DisplayName": "Spirit Gem Level 7",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Desert/Maraketh/Floor/Blank_Fill_01.tdt",
+			"B": "Metadata/Terrain/Desert/Maraketh/Floor/Floor_Medallion_Small_01.tdt"
+		  },
+		  "ClusterPattern": [
+			["*", "A", "A","A", "*"],
+			["A", "*", "*","*", "A"],
+			["A", "*", "A","*", "A"],
+			["A", "*", "*","*", "A"],
+			["*", "A", "A","A", "*"]
+
+		  ]
+	},
+	{
+		  "Name": "Metadata/Terrain/Desert/Maraketh/Floor/Blank_Fill_01.tdt",
+		  "DisplayName": "Jewel Rare Beetle",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Desert/Maraketh/Floor/Blank_Fill_01.tdt",
+			"B": "Metadata/Terrain/Desert/Maraketh/Floor/Floor_Medallion_Small_01.tdt"
+		  },
+		  "ClusterPattern": [
+			["A", "A", "A"],
+			["A", "B", "A"],
+			["A", "A", "A"]
+		  ]
+	},
+
+
     {
       "Name": "Metadata/Terrain/Desert/Maraketh/Features/Thickwall_StairsDown_01.tdt",
       "ExpectedCount": 1,
@@ -475,7 +594,9 @@
     }
   ],
   "G3_5": [
-    {
+    
+	
+	{
       "Name": "Metadata/Terrain/Jungle/JungleExterior/AreaTransitions/ChimeralJungle_to_ChaosTemple.tdt",
       "ExpectedCount": 1,
       "DisplayName": "The Temple of Chaos"
@@ -645,9 +766,9 @@
       "DisplayName": "Tomb of the Consort"
     },
     {
-      "Name": "accessiblefence",
-      "ExpectedCount": 2,
-      "DisplayName": "Random ring 1 of 2 locations"
+      "Name": "Metadata/Terrain/Woods/Graveyard/Thickwall/St_01.tdt",
+      "ClusterSize": 18,
+      "DisplayName": "Random ring"
     },
     {
       "Name": "Metadata/Terrain/Woods/Graveyard/Feature/GraveyardToGrimTangle_transition_01.tdt",
@@ -1047,6 +1168,11 @@
       "Name": "Metadata/Terrain/Islands/Tiles/Prison/Features/dungeon_prison_chapel_01.tdt",
       "ExpectedCount": 1,
       "DisplayName": "Flask buff - Need key"
+    }, 
+	{
+      "Name": "Metadata/Terrain/Islands/Tiles/Prison/Prison_Confinement_Fill_01.tdt",
+	  "ClusterSize": 38,
+      "DisplayName": "Strongbox"
     },
     {
       "Name": "Metadata/Terrain/Islands/Tiles/Prison/Features/LowerPrison/Maximumprison.tdt",
@@ -1499,6 +1625,21 @@
       "ExpectedCount": 1,
       "DisplayName": "Mawdun Mine"
     },
+	{
+		  "Name": "Metadata/Terrain/forced_blank.tdt",
+		  "DisplayName": "Artificers Orb",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/forced_blank.tdt",
+			"B": "Metadata/Terrain/Desert/Quarry/Abyss/mine_abyss_concave_v01_01.tdt"
+		  },
+		  "ClusterPattern": [		
+			
+			["B", "A", "A", "A"],
+			["A", "A", "A", "A"],
+			["B", "A", "A", "A"]
+
+		  ]
+	},
     {
       "Name": "Metadata/Terrain/Desert/Quarry/Features/Maraketh_Entrance_01.tdt",
       "ExpectedCount": 1,
@@ -1511,6 +1652,28 @@
       "ExpectedCount": 1,
       "DisplayName": "Glade"
     },
+	{
+		  "Name": "TH",
+		  "DisplayName": "Gem Level 14",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/forced_blank.tdt",
+			"B": "Metadata/Terrain/Woods/OldForestWoods/Fill_01.tdt"
+			
+		  },
+		  "ClusterPattern": [		
+			
+			
+			["*","B", "B", "B", "B", "B", "B", "B"],
+			["*","*", "*", "*", "*", "*", "*", "B"],
+			["*","*", "*", "*", "*", "*", "*", "B"],
+			["*","*", "*", "*", "*", "*", "*", "B"],
+			["*","A", "A", "A", "*", "*", "*", "B"],
+			["*","A", "A", "A", "*", "*", "*", "B"],
+			["*","A", "A", "A", "*", "*", "*", "B"],
+		
+
+		  ]
+	},
     {
       "Name": "Metadata/Terrain/Interlude/Part3/P3_1/Jungle_to_KriarVillage_Transition.tdt",
       "ExpectedCount": 1,
@@ -1584,6 +1747,21 @@
       "ExpectedCount": 1,
       "DisplayName": "5% Maximum Life"
     },
+	{
+		  "Name": "Metadata/Terrain/forced_blank.tdt",
+		  "DisplayName": "Caster Vendor",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/forced_blank.tdt",
+			"B": "Metadata/Terrain/Desert/Oasis/Ruins/ruinwall_St_feature_01.tdt"
+		  },
+		  "ClusterPattern": [		
+			
+			["A", "A", "A", "B"],
+			["A", "A", "A", "B"],
+			["A", "A", "A", "B"]
+
+		  ]
+	},
     {
       "Name": "Metadata/Terrain/Interlude/Part2/P2_1/Cliff/Cliff_CvSS_02.tdt",
       "ExpectedCount": 1,
@@ -1654,11 +1832,39 @@
       "ExpectedCount": 1,
       "DisplayName": "permanent buff"
     },
-    {
-      "Name": "Metadata/Terrain/Jungle/JungleExterior/Fills/JungleGroundPuddle_04.tdt",
-      "ExpectedCount": 1,
-      "DisplayName": "Orok Campfire (Lesser Jeweller's Orb)"
-    },
+
+
+	{
+		  "Name": "Metadata/Terrain/Desert/Maraketh/Floor/Blank_Fill_01.tdt",
+		  "DisplayName": "Orok Campfire (Lesser Jeweller's Orb)",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/forced_blank.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["A", "A", "A"],
+			["A", "A", "A"],
+			["A", "A", "A"]
+		  ]
+	},
+	{
+		  "Name": "Metadata/Terrain/Jungle/JungleExterior/SandToWater/Overlays/OverlayCv_01_01.tdt",
+		  "DisplayName": "Magic Ring",
+		  "TileAliases": {
+			"A": "Metadata/Terrain/Jungle/JungleExterior/SandToWater/Overlays/OverlayCv_01_01.tdt",
+			"B": "Metadata/Terrain/Jungle/JungleExterior/SandToWater/Overlays/OverlayCv_01_03.tdt"
+
+		  },
+		  "ClusterPattern": [
+			["A", "A", "A", "B", "B",  "B"],
+			["A", "A", "A", "B", "B",  "B"],
+			["A", "A", "A", "B", "B",  "B"],
+			["A", "A", "A", "B", "B",  "B"],
+			["A", "A", "A", "B", "B",  "B"],
+			["A", "A", "A", "B", "B",  "B"],
+
+		  ]
+	},
     {
       "Name": "Metadata/Terrain/Jungle/JungleExterior/SandToWater/Feature/EntranceCaravanFord_01.tdt",
       "ExpectedCount": 1,
@@ -1672,6 +1878,15 @@
   ],
   "G1_2": [
     {
+      "Name": "Metadata/Terrain/Woods/Slash/CvMM_01.tdt",
+      "ClusterSize": 18,
+      "DisplayName": "Skill Gem"
+    },{
+      "Name": "Metadata/Terrain/Woods/Slash/StMM_01.tdt",
+      "ClusterSize": 18,
+      "DisplayName": "Skill Gem"
+    },
+	{
       "Name": "Metadata/Terrain/Woods/Slash/HagWitchArena_02.tdt",
       "ExpectedCount": 1,
       "DisplayName": "Beira of the Rotten (10% Cold Res)"
@@ -1832,7 +2047,7 @@
     {
       "Name": "Metadata/Terrain/Jungle/AntHill/AntHollow/hollow_StSW_01.tdt",
       "ExpectedCount": 1,
-      "DisplayName": "Larva Hollow"
+      "DisplayName": "Rare Monster"
     },
     {
       "Name": "Metadata/Terrain/Jungle/JungleExterior/AreaTransitions/JungleToWaterways_01.tdt",

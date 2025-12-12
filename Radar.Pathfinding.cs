@@ -21,7 +21,7 @@ public partial class Radar
 {
     private Func<Vector2, Action<List<Vector2i>>, CancellationToken, Task> _addRouteAction;
     private Func<Color> _getColor;
-
+    
     private void LoadTargets()
     {
         var fileText = File.ReadAllText(Path.Combine(DirectoryFullName, "targets.json"));
@@ -307,21 +307,37 @@ public partial class Radar
         return _allTargetLocations.Where(x => regex.IsMatch(x.Key)).SelectMany(x => x.Value).ToList();
     }
 
-	private TargetLocations ClusterTarget(TargetDescription target)
-	{
-		var expectedCount = target.ExpectedCount;
-		var targetName = target.Name;
-		var clusterSize = target.ClusterSize; 
-		var locations = ClusterTarget(targetName, expectedCount, clusterSize);
-		if (locations == null) return null;
-		return new TargetLocations
-		{
-			Locations = locations,
-			Target = target,
-		};
-	}
+    private TargetLocations ClusterTarget(TargetDescription target)
+    {
+        // NEW: Use pattern matching if pattern is defined
+        if (target.ClusterPattern != null && target.ClusterPattern.Length > 0)
+        {
+            var locations = FindPatternMatches(target);
+            if (locations == null || locations.Count == 0)
+                return null;
 
-   private Vector2[] ClusterTarget(string targetName, int expectedCount, int clusterSize = 1) // ADD clusterSize parameter
+            return new TargetLocations
+            {
+                Locations = locations.Select(v => (Vector2)v).ToArray(),
+                Target = target,
+            };
+        }
+
+        // OLD: Fallback to original clustering for backward compatibility
+        var expectedCount = target.ExpectedCount;
+        var targetName = target.Name;
+        var clusterSize = target.ClusterSize;
+        var locations2 = ClusterTarget(targetName, expectedCount, clusterSize);
+        if (locations2 == null) return null;
+
+        return new TargetLocations
+        {
+            Locations = locations2,
+            Target = target,
+        };
+    }
+
+    private Vector2[] ClusterTarget(string targetName, int expectedCount, int clusterSize = 1) // ADD clusterSize parameter
 	{
 		var tileList = GetLocationsFromTilePattern(targetName);
 		if (tileList is not { Count: > 0 })
@@ -379,7 +395,158 @@ public partial class Radar
     {
         return _processedTerrainData[tile.Y][tile.X] is 5 or 4;
     }
+    private List<Vector2i> FindPatternMatches(TargetDescription target)
+    {
+        if (target.ClusterPattern == null || target.ClusterPattern.Length == 0)
+            return null;
 
+        
+
+        var matches = new List<Vector2i>();
+        var pattern = target.ClusterPattern;
+        var aliases = target.TileAliases ?? new Dictionary<string, string>();
+
+       
+
+        // CACHE tile data for performance - read once instead of millions of times
+        var tileData = GameController.Memory.ReadStdVector<TileStructure>(_terrainMetadata.TgtArray);
+       
+        
+        var rotations = new[] {
+        pattern,
+        RotatePattern90(pattern),
+        RotatePattern90(RotatePattern90(pattern)),
+        RotatePattern90(RotatePattern90(RotatePattern90(pattern)))
+    };
+
+        // Calculate map dimensions in tiles
+        int maxTileX = _areaDimensions.Value.X / TileToGridConversion;
+        int maxTileY = _areaDimensions.Value.Y / TileToGridConversion;
+
+
+        // Scan the entire map
+        for (int tileY = 0; tileY < maxTileY; tileY++)
+        {
+            for (int tileX = 0; tileX < maxTileX; tileX++)
+            {
+                var gridPos = new Vector2i(tileX * TileToGridConversion, tileY * TileToGridConversion);
+
+                // Check if any rotation matches at this position
+                foreach (var rotatedPattern in rotations)
+                {
+                    if (PatternMatchesAt(gridPos, rotatedPattern, aliases, tileData))
+                    {
+                        // Calculate center position of the matched pattern
+                        int patternWidth = rotatedPattern[0].Length;
+                        int patternHeight = rotatedPattern.Length;
+                        int centerX = gridPos.X + (patternWidth * TileToGridConversion) / 2;
+                        int centerY = gridPos.Y + (patternHeight * TileToGridConversion) / 2;
+                        matches.Add(new Vector2i(centerX, centerY));                       
+                        break; // Don't count same position multiple times with different rotations
+                    }
+                }
+            }
+        }
+
+       
+        return matches;
+    }
+    /// <summary>
+    /// Check if pattern matches at specific position
+    /// </summary>
+    private bool PatternMatchesAt(Vector2i startPos, string[][] pattern, Dictionary<string, string> aliases, TileStructure[] tileData)
+    {
+        int patternHeight = pattern.Length;
+        int patternWidth = pattern[0].Length;
+
+        // Check each cell in the pattern
+        for (int py = 0; py < patternHeight; py++)
+        {
+            for (int px = 0; px < patternWidth; px++)
+            {
+                var patternCell = pattern[py][px];
+                var gridPos = new Vector2i(
+                    startPos.X + px * TileToGridConversion,
+                    startPos.Y + py * TileToGridConversion
+                );
+
+                // Skip wildcards (null or "*")
+                if (patternCell == null || patternCell == "*")
+                    continue;
+
+                // Resolve alias to full tile name
+                var requiredTile = aliases.ContainsKey(patternCell)
+                    ? aliases[patternCell]
+                    : patternCell;
+
+                // Get actual tile at this position
+                var actualTile = GetTileAt(gridPos, tileData);
+
+               
+
+                // Check if tiles match
+                if (actualTile != requiredTile)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Rotate pattern 90 degrees clockwise
+    /// </summary>
+    private string[][] RotatePattern90(string[][] pattern)
+    {
+        int rows = pattern.Length;
+        int cols = pattern[0].Length;
+        var rotated = new string[cols][];
+
+        for (int i = 0; i < cols; i++)
+        {
+            rotated[i] = new string[rows];
+            for (int j = 0; j < rows; j++)
+            {
+                rotated[i][j] = pattern[rows - 1 - j][i];
+            }
+        }
+
+        return rotated;
+    }
+
+
+    /// <summary>
+    /// Get tile name at grid position
+    /// </summary>
+    private string GetTileAt(Vector2i gridPos, TileStructure[] tileData)
+    {
+        // Convert grid position to tile coordinates
+        int tileX = gridPos.X / TileToGridConversion;
+        int tileY = gridPos.Y / TileToGridConversion;
+        int tileIndex = tileY * _terrainMetadata.NumCols + tileX;
+
+        // Bounds check
+        if (tileIndex < 0 || tileX < 0 || tileY < 0 || tileX >= _terrainMetadata.NumCols)
+            return null;
+
+        try
+        {
+            if (tileIndex >= tileData.Length)
+                return null;
+
+            var tgtTileStruct = GameController.Memory.Read<TgtTileStruct>(tileData[tileIndex].TgtFilePtr);
+
+            // Read the TgtPath (the .tdt file path) instead of the detail name
+            var tilePath = tgtTileStruct.TgtPath.ToString(GameController.Memory);
+
+            return tilePath;
+        }
+        catch (Exception ex)
+        {
+            
+            return null;
+        }
+    }
     private IEnumerable<Vector2i> GetAllNeighborTiles(Vector2i start)
     {
         foreach (var range in Enumerable.Range(1, 100000))
